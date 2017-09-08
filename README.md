@@ -73,11 +73,12 @@ By default, cron won't load any environment as it runs - make sure you source th
 variables before running the script!.
 
 Example crontab (assuming you added your environment variables into `~/.profile` that runs the backup every
-working weekday at 17:30, on low priority, piping the output into a log file in your home folder:
+working weekday at 17:30, on low priority, piping the output into a log file in your home folder overwritting any
+previous logs:
 
 ```cron
 # $HOME thankfully is available to cron
-30 17 * * MON-FRI source $HOME/.profile; nice -n19 $HOME/Projects/borg-s3-home-backup/borg-backup.sh >> $HOME/backup.log
+30 17 * * MON-FRI . $HOME/.profile && nice -n19 $HOME/Projects/borg-s3-home-backup/borg-backup.sh > $HOME/backup.log 2>&1
 ```
 
 ## Restoring backups
