@@ -1,0 +1,7 @@
+${HOME}/.cache
+${HOME}/.npm
+${HOME}/.composer
+${HOME}/.vagrant.d
+${HOME}/Downloads/
+re:/vendor/
+re:/node_modules/
