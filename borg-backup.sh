@@ -3,6 +3,8 @@
 # Name to give this backup within the borg repo
 BACKUP_NAME=home-$(date +%Y-%m-%dT%H.%M)
 
+printf "\n\n ** Starting backup ${BACKUP_NAME} of home folder...\n"
+
 # Check environment vars are set
 if [[ ! "$BORG_REPO" ]]; then
 	printf "\n ** Please provide with BORG_REPO on the environment\n"
@@ -26,13 +28,12 @@ if [ ! -f "./${EXCLUDES_FILE}" ]; then
 fi
 
 # Local borg backup, low priority
-nice -n19 \
-	borg create ::${BACKUP_NAME} \
+borg create ::${BACKUP_NAME} \
 	${HOME} \
 	-v \
 	--stats \
 	--list \
-	--exclude-from ${EXCLUDES_FILE}
+	--exclude-from ${EXCLUDES_FILE} \
 	--compression zlib,6
 
 # Define and store the backup's exit status
@@ -46,7 +47,7 @@ if [ $OPERATION_STATUS == 0 ]; then
 
 	# Sync borg repo to s3, again low priority
 	printf "\n\n ** Sync to s3...\n"
-	nice -n19 aws s3 sync ${BORG_REPO} s3://${BORG_S3_BACKUP_BUCKET} --profile=${BORG_S3_BACKUP_PROFILE} --delete
+	aws s3 sync ${BORG_REPO} s3://${BORG_S3_BACKUP_BUCKET} --profile=${BORG_S3_BACKUP_PROFILE} --delete
 
 	# We do care about s3 sync succeeding though
 	OPERATION_STATUS=$?
