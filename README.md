@@ -91,10 +91,13 @@ There's no script here to restore your backups, you'll have to use borg for that
   * CD into some folder then `borg extract ::backup-name`, should extract on that same folder.
   * Move extracted files where they're meant to be.
 
-Example for a typical desktop computer:
+Example for a typical desktop computer - total restore of your home folder:
+  * Make an administrative user whichever way you'd like, make sure they can `sudo` (for instance, on ubuntu
+  they must be on the `adm` group). You'll be using this user to restore your data. Do this even if your user
+  is already sudo-able to avoid issues when running the commands below.
   * Log out of your desktop back to the log in screen.
   * `CTRL+ALT+F1` to switch to tty1.
-  * Log in.
+  * Log in as said user.
 
 Then:
 
