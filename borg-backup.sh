@@ -22,7 +22,7 @@ if [[ ! "$BORG_S3_BACKUP_AWS_PROFILE" ]]; then
 fi
 
 EXCLUDES_FILE=`dirname $0`/excludes.txt
-if [ ! -f "./${EXCLUDES_FILE}" ]; then
+if [ ! -f "${EXCLUDES_FILE}" ]; then
     printf "\n ** Please create an excludes file (even if empty) at '${EXCLUDES_FILE}'.\n"
 	exit 1
 fi
