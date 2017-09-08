@@ -41,6 +41,7 @@ These are borg-standard, as per [borg's documentation](https://borgbackup.readth
   Whereas borg supports ssh paths here as well as any mounted folder (eg s3 via fuse), I would recommend
   this to be a local folder on a real drive, if you can afford the space, for speed.
   * **BORG_PASSPHRASE** (optional, recommended): borg will encrypt your backups using this passphrase. You should.
+  Make sure you keep this somewhere safe, other than your backup as you'll also need it to restore your files.
 
 These are required by the script to function:
 
@@ -72,9 +73,42 @@ By default, cron won't load any environment as it runs - make sure you source th
 variables before running the script!.
 
 Example crontab (assuming you added your environment variables into `~/.profile` that runs the backup every
-working weekday at 17:30, piping the output into a log file in your home folder:
+working weekday at 17:30, on low priority, piping the output into a log file in your home folder:
 
 ```cron
 # $HOME thankfully is available to cron
-30 17 * * MON-FRI source $HOME/.profile; $HOME/Projects/borg-s3-home-backup/borg-backup.sh > $HOME/backup.log
+30 17 * * MON-FRI source $HOME/.profile; nice -n19 $HOME/Projects/borg-s3-home-backup/borg-backup.sh >> $HOME/backup.log
+```
+
+## Restoring backups
+
+There's no script here to restore your backups, you'll have to use borg for that. See [borg's documentation](https://borgbackup.readthedocs.io/en/stable/usage.html#borg-extract). Generally:
+
+  * Make sure the environment variables above are all set.
+  * Download from s3 all your backup files into the location at $BORG_REPO (if you don't have your local borg repo).
+  * `borg list` will show you available backups
+  * CD into some folder then `borg extract ::backup-name`, should extract on that same folder.
+  * Move extracted files where they're meant to be.
+
+Example for a typical desktop computer:
+  * Log out of your desktop back to the log in screen.
+  * `CTRL+ALT+F1` to switch to tty1.
+  * Log in.
+
+Then:
+
+```bash
+# Move your current home folder out of the way
+cd /home
+mv myusername myusername-old
+
+# Make yourself a new one belonging to you
+sudo mkdir myusername
+sudo chown myusername:myusername myusername
+
+# Work out available backups and extract!
+borg list
+cd /
+borg extract ::whichever-backup-you-need-maybe-latest
+reboot
 ```
