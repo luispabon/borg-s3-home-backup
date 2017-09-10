@@ -21,9 +21,9 @@ if [[ ! "$BORG_S3_BACKUP_AWS_PROFILE" ]]; then
 	exit 1
 fi
 
-EXCLUDES_FILE=`dirname $0`/excludes.txt
+EXCLUDES_FILE=$(dirname $0)/excludes.txt
 if [ ! -f "${EXCLUDES_FILE}" ]; then
-    printf "\n ** Please create an excludes file (even if empty) at '${EXCLUDES_FILE}'.\n"
+	printf "\n ** Please create an excludes file (even if empty) at '${EXCLUDES_FILE}'.\n"
 	exit 1
 fi
 
@@ -56,7 +56,7 @@ fi
 if [ $OPERATION_STATUS == 0 ]; then
 	STATUS_MESSAGE="Backup successful"
 else
-    STATUS_MESSAGE="Backup failed because reasons - see output"
+	STATUS_MESSAGE="Backup failed because reasons - see output"
 fi
 
 # Send desktop notification and exit appropriately if supported by the system - this will probably
@@ -64,8 +64,8 @@ fi
 if hash notify-send 2>/dev/null; then
 	if [ $OPERATION_STATUS == 0 ]; then
 		notify-send -t 0 "Home folder backup" "${STATUS_MESSAGE}" --urgency=normal --icon=dialog-information
-    else
-        notify-send -t 0 "Home folder backup" "${STATUS_MESSAGE}" --urgency=critical --icon=dialog-error
+	else
+		notify-send -t 0 "Home folder backup" "${STATUS_MESSAGE}" --urgency=critical --icon=dialog-error
 	fi
 fi
 
