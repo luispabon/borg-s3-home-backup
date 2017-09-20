@@ -23,7 +23,7 @@ computer.
 
   * Linux for sure.
   * MacOS likely.
-  * Linux on Windows 10, maybe.
+  * Linux on Windows 10, long shot.
 
 ## Requirements
 

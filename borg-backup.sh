@@ -42,7 +42,7 @@ OPERATION_STATUS=$?
 # Only continue if backup was actually successful
 if [ $OPERATION_STATUS == 0 ]; then
 	# Clean up old backups: keep 7 end of day and 4 additional end of week archives.
-	# Prune operation is not important, s3 sunc is - do not exit were this to fail
+	# Prune operation is not important, s3 sync is - do not exit were this to fail
 	borg prune -v --list --keep-daily=7 --keep-weekly=4
 
 	# Sync borg repo to s3, again low priority
@@ -60,7 +60,7 @@ else
 fi
 
 # Send desktop notification and exit appropriately if supported by the system - this will probably
-# work on a linux desktop
+# only work on a linux desktop. Accepting contributions for the mac.
 if hash notify-send 2>/dev/null; then
 	if [ $OPERATION_STATUS == 0 ]; then
 		notify-send -t 0 "Home folder backup" "${STATUS_MESSAGE}" --urgency=normal --icon=dialog-information
