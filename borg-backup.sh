@@ -47,7 +47,7 @@ if [ $OPERATION_STATUS == 0 ]; then
 
 	# Sync borg repo to s3, again low priority
 	printf "\n\n ** Sync to s3...\n"
-	aws s3 sync ${BORG_REPO} s3://${BORG_S3_BACKUP_BUCKET} --profile=${BORG_S3_BACKUP_PROFILE} --delete
+	aws s3 sync ${BORG_REPO} s3://${BORG_S3_BACKUP_BUCKET} --profile=${BORG_S3_BACKUP_AWS_PROFILE} --delete
 
 	# We do care about s3 sync succeeding though
 	OPERATION_STATUS=$?
