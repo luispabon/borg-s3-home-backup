@@ -27,7 +27,7 @@ if [ ! -f "${EXCLUDES_FILE}" ]; then
 	exit 1
 fi
 
-# Local borg backup, low priority
+# Local borg backup
 borg create ::${BACKUP_NAME} \
 	${HOME} \
 	-v \
@@ -45,7 +45,7 @@ if [ $OPERATION_STATUS == 0 ]; then
 	# Prune operation is not important, s3 sync is - do not exit were this to fail
 	borg prune -v --list --keep-daily=7 --keep-weekly=4
 
-	# Sync borg repo to s3, again low priority
+	# Sync borg repo to s3
 	printf "\n\n ** Sync to s3...\n"
 	aws s3 sync ${BORG_REPO} s3://${BORG_S3_BACKUP_BUCKET} --profile=${BORG_S3_BACKUP_AWS_PROFILE} --delete
 
