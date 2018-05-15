@@ -77,7 +77,6 @@ working weekday at 17:30, on low priority, piping the output into a log file in 
 previous logs:
 
 ```cron
-# $HOME thankfully is available to cron
 30 17 * * MON-FRI . $HOME/.profile && nice -n19 $HOME/Projects/borg-s3-home-backup/borg-backup.sh > $HOME/backup.log 2>&1
 ```
 
