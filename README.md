@@ -80,12 +80,19 @@ previous logs:
 30 17 * * MON-FRI . $HOME/.profile && nice -n19 $HOME/Projects/borg-s3-home-backup/borg-backup.sh > $HOME/backup.log 2>&1
 ```
 
+### Note: borg backup locking
+
+We lock the borg backup repository during aws s3 sync to ensure it doesn't change during uploads. Borg achieves locks using lock files within the repo,
+therefore these files will also be backed up to s3 during sync. If you ever need to download your backup from s3 it will thus be locked and will need
+unlocking with `borg break-lock`.
+
 ## Restoring backups
 
 There's no script here to restore your backups, you'll have to use borg for that. See [borg's documentation](https://borgbackup.readthedocs.io/en/stable/usage.html#borg-extract). Generally:
 
   * Make sure the environment variables above are all set.
   * Download from s3 all your backup files into the location at $BORG_REPO (if you don't have your local borg repo).
+  * Run `borg break-lock` to unlock your backup repo. See [note above](#note-borg-backup-locking) for explanation on why your backup is locked.
   * `borg list` will show you available backups
   * CD into some folder then `borg extract ::backup-name`, should extract on that same folder.
   * Move extracted files where they're meant to be.
