@@ -53,7 +53,7 @@ These are required by the script to function:
   * Git clone this repo somewhere in your computer.
   * Copy [excludes.txt.dist](excludes.txt.dist) into `excludes.txt` and check its contents. The file is
   mandatory, but it can be empty. Have a look at
-  [borg's documentation on the subject of excludes](https://borgbackup.readthedocs.io/en/stable/usage.html#borg-help-patterns) for more info.
+  [borg's documentation on the subject of excludes](https://borgbackup.readthedocs.io/en/stable/usage/help.html#borg-help-patterns) for more info.
   [excludes.txt.dist](excludes.txt.dist) has a few examples, indeed these are for my specific use case. If not a regular expression, paths must be
   absolute.
   * Install borg backup according to your platform. Possibly already on your distro's software repositories.
