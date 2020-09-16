@@ -1,4 +1,9 @@
-# Borg s3 home backup
+# Borg s3/gcloud storage home backup
+
+## What
+
+This is a script to backup your home folder using borg into a local borg repository which is synced
+into an AWS S3 or Google Cloud Storage bucket.
 
 ## Introduction
 
@@ -6,17 +11,18 @@ Having enough of overcomplicated or crappy commercial backup tools for Linux, I 
 back up my home folder into s3 on a cron schedule using borg backup:
 
   * Borg is quick, saves a great deal of space compared to traditional incremental backup solutions
-  * s3 is cheap compared to commercial backup solutions, and also reliable
+  * s3 and gcloud storage are both cheap compared to commercial backup solutions, and also reliable
   * And cron is always easy to get going on linux
 
 This script will backup your home folder using borg. The backup will be both compressed and encrypted.
-Since borg does not natively support s3, and the fuse/mount solution is slow as heck, we're using aws
-sync instead at the end. This actually works pretty well.
+Since borg does not natively support these cloud storage solutions, and the fuse/mount solutions are 
+slow as heck. We'll be using the rsync-like capabilities of the cli tools for each cloud provider, 
+which actually work pretty well.
 
-This also prunes your backups to keep 7 dailys and 4 end-of-weeks.
+This also prunes your backups to keep 7 dailies and 4 end-of-weeks.
 
 The side effect however is you'll have two backups, one wherever borg has its backup repo, and another
-on s3. This is good though, always a good idea to keep several backups even if one is on the same
+on the bucket. This is good though, always a good idea to keep several backups even if one is on the same
 computer.
 
 ## Compatibility
@@ -29,9 +35,9 @@ computer.
 
 ### Tools
 
-  * [Borg backup.](https://www.borgbackup.org/)
-  * awscli - you must configure a profile with aws access key and secret for use on the command line.
-  * An s3 bucket the above profile has access to.
+  * [Borg backup.](https://www.borgbackup.org/) - your distro will probably have this on its repos
+  * The cloud provider's cli tool: either `awscli` or `gsutil` (part of `google-cloud-sdk`). Same as above. 
+  * A bucket
 
 ### Environment variables
 
@@ -45,8 +51,10 @@ These are borg-standard, as per [borg's documentation](https://borgbackup.readth
 
 These are required by the script to function:
 
-  * **BORG_S3_BACKUP_BUCKET**: put in here the bucket name only.
-  * **BORG_S3_BACKUP_AWS_PROFILE**: put in here the aws cli profile that has access to that bucket (eg `default`).
+  * **BORG_S3_BACKUP_GOOGLE**: set to `true` if you want to use gcloud storage instead of AWS
+  * **BORG_S3_BACKUP_BUCKET** (for both cloud providers): put in here the bucket name only. The naming with the `s3` 
+        word is a backwards compatibility measure from when this script supported AWS s3 only.
+  * **BORG_S3_BACKUP_AWS_PROFILE** (s3 only): put in here the aws cli profile that has access to that bucket (eg `default`).
 
 ## How to use
 
@@ -57,12 +65,15 @@ These are required by the script to function:
   [excludes.txt.dist](excludes.txt.dist) has a few examples, indeed these are for my specific use case. If not a regular expression, paths must be
   absolute.
   * Install borg backup according to your platform. Possibly already on your distro's software repositories.
-  * Install awscli - same as above.
-  * AWS setup:
-    * You obviously need an account in there.
-    * You must have access keys and secrets for it.
-    * Configure aws cli with these credentials, eg `aws configure`.
-    * Make yourself a bucket in your aws account.
+  * For S3:
+      * Install `awscli`. Possibly on your distro's repos already.
+      * Generate programmatic credentials
+      * Configure aws cli with these credentials, eg `aws configure`.
+  * For Gcloud Storage:
+      * [Install gsutil](https://cloud.google.com/storage/docs/gsutil_install). Comes with the `google-cloud-sdk`.
+      * [Authenticate with the `gcloud` tool](https://cloud.google.com/storage/docs/authentication)
+  * Make yourself a bucket in your cloud provider.
+  * Give full access to the bucket the account you're authenticating the cli tool with.
   * Set up the environment variables discussed above (eg on your `~/.profile`). I do recommend you also set `BORG_PASSPHRASE`.
   * Create a borg repo: `borg init`
   * Run [borg-backup.sh](borg-backup.sh)!
