@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Name to give this backup within the borg repo
 BACKUP_NAME=home-$(date +%Y-%m-%dT%H.%M)
