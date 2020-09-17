@@ -49,6 +49,7 @@ fi
 
 BUCKET_SIZE_GB=`numfmt --to iec --format "%8.4f" ${BUCKET_SIZE}`
 DOWNLOAD_FOLDER_AVAILABLE_GB=`numfmt --to iec --format "%8.4f" ${DOWNLOAD_FOLDER_AVAILABLE}`
+
 echo "${bold}Cloud service:${normal} ${accent}${CLOUD_SERVICE_NAME}${normal}"
 echo "${bold}Bucket size:${normal} ${accent}${BUCKET_SIZE_GB}${normal}"
 echo "${bold}Available space at ${secondary_accent}${DOWNLOAD_FOLDER}:${normal} ${accent}${DOWNLOAD_FOLDER_AVAILABLE_GB}${normal}"
