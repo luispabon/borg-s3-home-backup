@@ -91,6 +91,26 @@ previous logs:
 30 17 * * MON-FRI . $HOME/.profile && nice -n19 $HOME/Projects/borg-s3-home-backup/borg-backup.sh > $HOME/backup.log 2>&1
 ```
 
+#### Failed backups
+
+Sometimes borg will report a failed backup. In my experience, this is typically due to files owned by another user. 
+I for instance work a lot with docker and sometimes files owned by root are created in my home folder. You can 
+set up a crontab for your root user to fix this:
+
+```shell script
+~ sudo crontab -e
+```
+
+then add
+
+```cron
+28 17 * * MON-FRI nice -n19 /usr/bin/find /home/YOURUSERNAME \! -user YOURUSERNAME -print | /usr/bin/xargs /usr/bin/chown YOURUSERNAME:YOURUSERNAME -Rf
+```
+
+Quadruple-check the folder `find` is searching on. You don't want to be running this in `/` by accident.
+
+Make sure this cronjob is run (and has time to finish) before the cronjob that backs up your files.
+
 ### Note: borg backup locking
 
 We lock the borg backup repository during aws s3 sync to ensure it doesn't change during uploads. Borg achieves locks using lock files within the repo,
@@ -99,13 +119,27 @@ unlocking with `borg break-lock`.
 
 ## Restoring backups
 
-There's no script here to restore your backups, you'll have to use borg for that. See [borg's documentation](https://borgbackup.readthedocs.io/en/stable/usage.html#borg-extract). Generally:
+We provide with a script to download your backup from the cloud provider. It has the same requirements for env vars as the
+backup script:
 
-  * Make sure the environment variables above are all set.
-  * Download from s3 all your backup files into the location at $BORG_REPO (if you don't have your local borg repo).
-  * Run `borg break-lock` to unlock your backup repo. See [note above](#note-borg-backup-locking) for explanation on why your backup is locked.
+```shell script
+~ ./download-backup.sh /path/to/folder
+```
+
+Then move that folder to the expected location of your borg repo.
+
+If your borg repo is not present on your computer, you can of course simply:
+
+```shell script
+~ ./download-backup.sh $BORG_REPO
+```
+
+After the backup is present at `$BORG_REPO`:
+  * CD into the folder and run `borg break-lock` to unlock your backup repo. See [note above](#note-borg-backup-locking) 
+        for explanation on why your backup is locked.
   * `borg list` will show you available backups
-  * CD into some folder then `borg extract ::backup-name`, should extract on that same folder.
+  * CD into some folder then `borg extract ::backup-name`. This will extract your backup to the current folder. See 
+        [borg's documentation](https://borgbackup.readthedocs.io/en/stable/usage.html#borg-extract) for more info.
   * Move extracted files where they're meant to be.
 
 Example for a typical desktop computer - total restore of your home folder:
