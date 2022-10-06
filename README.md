@@ -15,8 +15,8 @@ back up my home folder into s3 on a cron schedule using borg backup:
   * And cron is always easy to get going on linux
 
 This script will backup your home folder using borg. The backup will be both compressed and encrypted.
-Since borg does not natively support these cloud storage solutions, and the fuse/mount solutions are 
-slow as heck. We'll be using the rsync-like capabilities of the cli tools for each cloud provider, 
+Since borg does not natively support these cloud storage solutions, and the fuse/mount solutions are
+slow as heck. We'll be using the rsync-like capabilities of the cli tools for each cloud provider,
 which actually work pretty well.
 
 This also prunes your backups to keep 7 dailies and 4 end-of-weeks.
@@ -36,7 +36,7 @@ computer.
 ### Tools
 
   * [Borg backup.](https://www.borgbackup.org/) - your distro will probably have this on its repos
-  * The cloud provider's cli tool: either `awscli` or `gsutil` (part of `google-cloud-sdk`). Same as above. 
+  * The cloud provider's cli tool: either `awscli` or `gsutil` (part of `google-cloud-sdk`). Same as above.
   * A bucket
 
 ### Environment variables
@@ -52,7 +52,7 @@ These are borg-standard, as per [borg's documentation](https://borgbackup.readth
 These are required by the script to function:
 
   * **BORG_S3_BACKUP_GOOGLE**: set to `true` if you want to use gcloud storage instead of AWS
-  * **BORG_S3_BACKUP_BUCKET** (for both cloud providers): put in here the bucket name only. The naming with the `s3` 
+  * **BORG_S3_BACKUP_BUCKET** (for both cloud providers): put in here the bucket name only. The naming with the `s3`
         word is a backwards compatibility measure from when this script supported AWS s3 only.
   * **BORG_S3_BACKUP_AWS_PROFILE** (s3 only): put in here the aws cli profile that has access to that bucket (eg `default`).
 
@@ -75,7 +75,7 @@ These are required by the script to function:
   * Make yourself a bucket in your cloud provider.
   * Give full access to the bucket the account you're authenticating the cli tool with.
   * Set up the environment variables discussed above (eg on your `~/.profile`). I do recommend you also set `BORG_PASSPHRASE`.
-  * Create a borg repo: `borg init`
+  * Create a borg repo. Eg: `borg init -e repokey-blake2` - see [borg quickstart guide](https://borgbackup.readthedocs.io/en/stable/quickstart.html) and [borg init docs](https://borgbackup.readthedocs.io/en/stable/usage/init.html) for more info
   * Run [borg-backup.sh](borg-backup.sh)!
 
 ### Cron
@@ -93,8 +93,8 @@ previous logs:
 
 #### Failed backups
 
-Sometimes borg will report a failed backup. In my experience, this is typically due to files owned by another user. 
-I for instance work a lot with docker and sometimes files owned by root are created in my home folder. You can 
+Sometimes borg will report a failed backup. In my experience, this is typically due to files owned by another user.
+I for instance work a lot with docker and sometimes files owned by root are created in my home folder. You can
 set up a crontab for your root user to fix this:
 
 ```shell script
@@ -135,10 +135,10 @@ If your borg repo is not present on your computer, you can of course simply:
 ```
 
 After the backup is present at `$BORG_REPO`:
-  * CD into the folder and run `borg break-lock` to unlock your backup repo. See [note above](#note-borg-backup-locking) 
+  * CD into the folder and run `borg break-lock` to unlock your backup repo. See [note above](#note-borg-backup-locking)
         for explanation on why your backup is locked.
   * `borg list` will show you available backups
-  * CD into some folder then `borg extract ::backup-name`. This will extract your backup to the current folder. See 
+  * CD into some folder then `borg extract ::backup-name`. This will extract your backup to the current folder. See
         [borg's documentation](https://borgbackup.readthedocs.io/en/stable/usage.html#borg-extract) for more info.
   * Move extracted files where they're meant to be.
 
@@ -155,15 +155,18 @@ Then:
 ```bash
 # Move your current home folder out of the way
 cd /home
-mv myusername myusername-old
+mv $HOME $HOME-old
 
 # Make yourself a new one belonging to you
-sudo mkdir myusername
-sudo chown myusername:myusername myusername
+sudo mkdir $HOME
+sudo chown $(whoami):$(getent group $(whoami) | awk 'BEGIN { FS = ":" } ; { print $1 }') $HOME
 
 # Work out available backups and extract!
 borg list
+home-2022-10-05T17.30                Weds, 2022-10-05 17:30:36 [1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef]
+home-2022-10-06T17.30                Thu, 2022-10-06 17:30:36  [1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef]
+
 cd /
-borg extract ::whichever-backup-you-need-maybe-latest
+borg extract ::home-2022-10-05T17.30
 reboot
 ```
