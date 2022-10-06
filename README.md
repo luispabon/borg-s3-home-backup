@@ -163,8 +163,8 @@ sudo chown $(whoami):$(getent group $(whoami) | awk 'BEGIN { FS = ":" } ; { prin
 
 # Work out available backups and extract!
 borg list
-home-2022-10-05T17.30          Weds, 2022-10-05 17:30:36 [1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef]
-home-2022-10-06T17.30          Thu, 2022-10-06 17:30:36  [1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef]
+home-2022-10-05T17.30          Weds, 2022-10-05 17:30:36 [1234567890abcdef1234567890abcdef]
+home-2022-10-06T17.30          Thu, 2022-10-06 17:30:36  [1234567890abcdef1234567890abcdef]
 
 cd /
 borg extract ::home-2022-10-05T17.30
