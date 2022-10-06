@@ -40,8 +40,8 @@ fi
 borg create ::${BACKUP_NAME} \
 	${HOME} \
 	-v \
+	--progress \
 	--stats \
-	--list \
 	--exclude-from ${EXCLUDES_FILE} \
 	--compression zlib,6
 
