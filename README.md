@@ -154,19 +154,20 @@ Then:
 
 ```bash
 # Move your current home folder out of the way
-cd /home
-mv $HOME $HOME-old
+~ cd /
+/ ~ mv $HOME $HOME-old
 
 # Make yourself a new one belonging to you
-sudo mkdir $HOME
+/ ~ sudo mkdir $HOME
 sudo chown $(whoami):$(getent group $(whoami) | awk 'BEGIN { FS = ":" } ; { print $1 }') $HOME
 
 # Work out available backups and extract!
-borg list
+/ ~ borg list
 home-2022-10-05T17.30          Weds, 2022-10-05 17:30:36 [1234567890abcdef1234567890abcdef]
 home-2022-10-06T17.30          Thu, 2022-10-06 17:30:36  [1234567890abcdef1234567890abcdef]
 
-cd /
-borg extract ::home-2022-10-05T17.30
-reboot
+/ ~ borg extract ::home-2022-10-05T17.30
+
+[... check your restored home folder ...]
+/ ~ reboot
 ```
