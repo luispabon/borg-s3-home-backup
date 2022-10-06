@@ -113,9 +113,9 @@ Make sure this cronjob is run (and has time to finish) before the cronjob that b
 
 ### Note: borg backup locking
 
-We lock the borg backup repository during aws s3 sync to ensure it doesn't change during uploads. Borg achieves locks using lock files within the repo,
-therefore these files will also be backed up to s3 during sync. If you ever need to download your backup from s3 it will thus be locked and will need
-unlocking with `borg break-lock`.
+We lock the borg backup repository during bucket sync to ensure it doesn't change during uploads. Borg achieves locks using lock files within the repo,
+therefore these files will also be backed up to the bucket during sync. If you ever need to download your backup from the bucket it will thus be locked and will need
+unlocking with `borg break-lock`, after you've restored it to the correct repo location.
 
 ## Restoring backups
 
