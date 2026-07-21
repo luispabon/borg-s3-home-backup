@@ -31,8 +31,8 @@ printf "${bold}Computing bucket size...${normal}\n\n"
 if [[ "$BORG_S3_BACKUP_GOOGLE" == "true" ]]; then
   CLOUD_SERVICE_NAME="Google Cloud Storage"
   BUCKET_URI="gs://${BORG_S3_BACKUP_BUCKET}"
-  BUCKET_SIZE=`gsutil du -s ${BUCKET_URI} | awk '{print \$1}'`
-  DOWNLOAD_COMMAND="gsutil -m rsync -r ${BUCKET_URI} ${DOWNLOAD_FOLDER}"
+  BUCKET_SIZE=`gcloud storage du --summarize ${BUCKET_URI} | awk '{print \$1}'`
+  DOWNLOAD_COMMAND="gcloud storage rsync -r ${BUCKET_URI} ${DOWNLOAD_FOLDER}"
 else
   if [[ ! "$BORG_S3_BACKUP_AWS_PROFILE" ]]; then
     printf "\n ** Please provide with BORG_S3_BACKUP_AWS_PROFILE on the environment (awscli profile)\n"

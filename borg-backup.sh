@@ -18,7 +18,7 @@ fi
 
 # Google and AWS require different sync commands
 if [[ "$BORG_S3_BACKUP_GOOGLE" == "true" ]]; then
-  SYNC_COMMAND="gsutil -m rsync -d -r ${BORG_REPO} gs://${BORG_S3_BACKUP_BUCKET}"
+  SYNC_COMMAND="gcloud storage rsync -r --delete-unmatched-destination-objects ${BORG_REPO} gs://${BORG_S3_BACKUP_BUCKET}"
   CLOUD_SERVICE_NAME="gs"
 else
   if [[ ! "$BORG_S3_BACKUP_AWS_PROFILE" ]]; then

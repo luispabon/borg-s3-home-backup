@@ -36,7 +36,7 @@ computer.
 ### Tools
 
   * [Borg backup.](https://www.borgbackup.org/) - your distro will probably have this on its repos
-  * The cloud provider's cli tool: either `awscli` or `gsutil` (part of `google-cloud-sdk`). Same as above.
+  * The cloud provider's cli tool: either `awscli` or `gcloud` (part of `google-cloud-sdk`). Same as above.
   * A bucket
 
 ### Environment variables
@@ -70,7 +70,8 @@ These are required by the script to function:
       * Generate programmatic credentials
       * Configure aws cli with these credentials, eg `aws configure`.
   * For Gcloud Storage:
-      * [Install gsutil](https://cloud.google.com/storage/docs/gsutil_install). Comes with the `google-cloud-sdk`.
+      * [Install gcloud CLI](https://cloud.google.com/sdk/docs/install). Comes with the `google-cloud-sdk`.
+      * Use `gcloud storage` commands (the `gsutil` tool is deprecated and will be removed from the default installation in March 2027).
       * [Authenticate with the `gcloud` tool](https://cloud.google.com/storage/docs/authentication)
   * Make yourself a bucket in your cloud provider.
   * Give full access to the bucket the account you're authenticating the cli tool with.
